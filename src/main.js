@@ -3,7 +3,7 @@ function createTodoList() {
 
     const getTodoList = () => todoList;
 
-    const getSpecificTodo = (index) => todos[index];
+    const getSpecificTodo = (index) => todoList[index];
     
     const addTodoItem = () => {
         const todo = createTodoItem();
