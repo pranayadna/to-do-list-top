@@ -1,22 +1,8 @@
-function createTodoList() {
-    const todoList = [];
+const projectList = [];
 
-    const getTodoList = () => todoList;
-
-    const getSpecificTodo = (index) => todoList[index];
-    
-    const addTodoItem = () => {
-        const todo = createTodoItem();
-        todoList.push(todo);
-        return todo;
-    };
-
-    return { getTodoList, getSpecificTodo, addTodoItem };
-}
-
-function createTodoItem() {
-    let title = 'Title Template';
-    let description = 'This is description template...';
+function createTask(initialTitle, initialDescription) {
+    let title = initialTitle;
+    let description = initialDescription;
     let dueDate = '30/05/2024';
     let priority = 'Low';
 
@@ -62,43 +48,90 @@ function createTodoItem() {
     };
 }
 
-function createProjectList() {
-    const projects = [];
+function createProject(name) {
+    const taskList = [];
+    let projectName = name;
 
-    const addTodoList = () => {
-        const todoList = createTodoList();
-        projects.push(todoList);
-        return todoList;
+    const setProjectName = (newName) => projectName = newName;
+
+    const getProjectName = () => projectName;
+
+    const getTaskList = () => taskList;
+
+    const getSpecificTask = (index) => taskList[index];
+
+    const printTaskList = () => {
+        taskList.forEach((task, index) => {
+            console.log(`Task ${index + 1}: ${task.getTitle()}`);
+        })
     }
+    
+    const addTask = (title, description) => {
+        const task = createTask(title, description);
+        taskList.push(task);
+        return task;
+    };
 
-    const getProjects = () => projects;
-
-    return { addTodoList, getProjects };
+    return { 
+        setProjectName, 
+        getProjectName, 
+        getTaskList, 
+        getSpecificTask, 
+        printTaskList,
+        addTask 
+    };
 }
 
-// Add to-do list to project list
-const projects1 = createProjectList();
-const projects2 = createProjectList();
+function projectManager() {
+    const addProject = (name) => {
+        const project = createProject(name);
+        projectList.push(project);
+        return project;
+    }
 
-// Add to-do item to to-do list
-const todoList1 = projects1.addTodoList();
-const todoList2 = projects1.addTodoList();
+    const getProjects = () => projectList;
 
-const addTodo1 = todoList1.addTodoItem();
+    const printProjectList = () => {
+        // console.log(`Total ${projectList.length} projects`);
+        projectList.forEach((project, index) => {
+            console.log(`Project ${index + 1}: ${project.getProjectName()}`);
+        })
+    }
 
-console.log({
-    title: addTodo1.getTitle(),
-    description: addTodo1.getDescription(),
-    dueDate: addTodo1.getDueDate(),
-    priority: addTodo1.getPriority(),
-});
+    return { 
+        addProject, 
+        getProjects,
+        printProjectList 
+    };
+}
 
-console.log({
-    todo1_item: todoList1.getTodoList(),
-    todo2_item: todoList2.getTodoList(),
-});
+function AppController() {
+    const projectManagerInstance = projectManager();
 
-console.log({
-    project1_list: projects1.getProjects(),
-    project2_list: projects2.getProjects(),
-});
+    const welcomeMessage = () => {
+        console.log("Welcome to the To-Do List TOP app.");
+        console.log("Add a new project:");
+    }
+
+    const addNewProject = (name) => {
+        projectManagerInstance.addProject(name);
+        console.log(`Project by name "${name}" is added`);
+        projectManagerInstance.printProjectList();
+        console.log("Choose your project to add a new task:");
+    }
+
+    const addTaskToProject = (index, title, description) => {
+        projectList[index - 1].addTask(title, description);
+        console.log(`Task "${title}" with description "${description}" added to project "${projectList[index - 1].getProjectName()}"`);
+        projectList[index - 1].printTaskList();
+    }
+
+    welcomeMessage();
+
+    return { 
+        addNewProject,
+        addTaskToProject
+    };
+}
+
+const app = AppController();
